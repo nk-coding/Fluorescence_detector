@@ -5,7 +5,7 @@ Related publication:
 A low-cost fluorescence reader for in vitro transcription and nucleic acid detection with Cas13a
  
 Authors of this Publication
-Florian Katzmeier, Lukas Aufinger, Aurore Dupin, Jorge Quinteiro, Matthias, Lenz, Ludwig Bauer2, Sven Klumpe2, Dawafuti Sherpa2, Benedikt Dürr , Maximilian Honemann, Igor Styazhkin, Friedrich C. Simmel1, Michael Heymann
+Florian Katzmeier, Lukas Aufinger, Aurore Dupin, Jorge Quinteiro, Matthias, Lenz, Ludwig Bauer, Sven Klumpe, Dawafuti Sherpa, Benedikt Dürr , Maximilian Honemann, Igor Styazhkin, Friedrich C. Simmel1, Michael Heymann
 
 The stl files should be printed such that the flattest site of each part lays on the bottom. The spacer needs to be printed twice.
 
