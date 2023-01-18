@@ -1,0 +1,24 @@
+.measureButton{
+}
+
+.text{
+    -fx-font-family: 'Arial';
+}
+
+.debugRed{
+    -fx-background-color: "red";
+}
+
+.debugBlue{
+    -fx-background-color: "blue";
+}
+
+.padding25{
+    /*-fx-background-color: "red";*/
+    -fx-padding: 25 0 25 0;
+}
+
+
+.text-field{
+    -fx-max-width: 75;
+}
