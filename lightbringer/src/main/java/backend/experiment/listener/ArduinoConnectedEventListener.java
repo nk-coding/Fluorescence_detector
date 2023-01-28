@@ -11,6 +11,7 @@ public class ArduinoConnectedEventListener implements SerialPortEventListener{
 
     private AtomicBoolean isLightbringer;
     private SerialPort tempPort;
+    private String readSting = "";
 
     public ArduinoConnectedEventListener(AtomicBoolean isLightbringer, SerialPort tempPort){
         this.isLightbringer = isLightbringer;
@@ -22,8 +23,8 @@ public class ArduinoConnectedEventListener implements SerialPortEventListener{
         synchronized(isLightbringer){
             if(serialPortEvent.isRXCHAR()){
                 try{
-                    String read = tempPort.readString(serialPortEvent.getEventValue());
-                    if(read.contains("RDY")){
+                    readSting += tempPort.readString(serialPortEvent.getEventValue());
+                    if(readSting.contains("RDY")){
                         tempPort.writeString("ACK%");
                         System.out.println("RDY recieved");
                         isLightbringer.set(true);
