@@ -6,15 +6,13 @@ import backend.measurement.Measurement;
 import backend.measurement.MeasurementConcentration;
 import backend.measurement.MeasurementConcentrationBlank;
 import backend.measurement.MeasurementResistance;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
+import jssc.SerialPort;
 import jssc.SerialPortException;
 
-public class SaveValuesEventListener implements SerialPortEventListener {
+public class SaveValuesEventListener extends BaseListener {
 
     Measurement mes;
     Experiment exp;
-    String lastFrag = "";
 
     public SaveValuesEventListener(Experiment exp, Measurement measurement) {
         this.exp = exp;
@@ -22,39 +20,23 @@ public class SaveValuesEventListener implements SerialPortEventListener {
     }
 
     @Override
-    public void serialEvent(SerialPortEvent serialPortEvent) {
+    void handleMessage(String message, SerialPort port) {
         synchronized (this.exp.getAtomicRdyReceived()) {
-            if (serialPortEvent.isRXCHAR()) {
-                try {
-                    if (serialPortEvent.getEventValue() > 0) {
-                        String read = this.exp.getArduinoPort().readString(serialPortEvent.getEventValue());
-                        String readWithLast = lastFrag + read;
-                        this.lastFrag = "";
-                        String[] values = readWithLast.split("%");
-                        for (int i = 0; i < values.length; i++) {
-                            String value = values[i];
-                            if (i == values.length - 1 && !read.endsWith("%")) {
-                                lastFrag = value;
-                            } else {
-                                System.out.println("value: " + value);
-                                if (value.contains("RDY")) {
-                                    System.out.println("REmoving Listener");
-                                    this.exp.getArduinoPort().removeEventListener();
-                                    this.exp.setRdyReceived(true);
-                                    this.exp.setCurrState(StateExperiment.READY);
-                                    this.exp.getAtomicRdyReceived().notify();
-                                } else if (value.matches("[0-9]+")) {
-                                    mes.saveValue(Integer.parseInt(value));
-                                } else {
-                                    System.err.println("Warning: received unknown message: " + value);
-                                }
-                            }
-                        }
-                    }
-                } catch (SerialPortException e) {
-                    System.out.println("exp in Save values");
-                    e.printStackTrace();
+            try {
+                if (message.contains("RDY")) {
+                    System.out.println("Removing Listener");
+                    this.exp.getArduinoPort().removeEventListener();
+                    this.exp.setRdyReceived(true);
+                    this.exp.setCurrState(StateExperiment.READY);
+                    this.exp.getAtomicRdyReceived().notify();
+                } else if (message.matches("[0-9]+")) {
+                    mes.saveValue(Integer.parseInt(message));
+                } else {
+                    System.out.println("Warning: received unknown message: " + message);
                 }
+            } catch (SerialPortException e) {
+                System.out.println("exp in Save values");
+                e.printStackTrace();
             }
         }
     }

@@ -7,32 +7,26 @@ import jssc.SerialPortException;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ArduinoConnectedEventListener implements SerialPortEventListener{
+public class ArduinoConnectedEventListener extends BaseListener{
 
-    private AtomicBoolean isLightbringer;
-    private SerialPort tempPort;
-    private String readSting = "";
+    private final AtomicBoolean isLightbringer;
 
-    public ArduinoConnectedEventListener(AtomicBoolean isLightbringer, SerialPort tempPort){
+    public ArduinoConnectedEventListener(AtomicBoolean isLightbringer){
         this.isLightbringer = isLightbringer;
-        this.tempPort = tempPort;
     }
 
     @Override
-    public void serialEvent(SerialPortEvent serialPortEvent) {
+    void handleMessage(String message, SerialPort port) {
         synchronized(isLightbringer){
-            if(serialPortEvent.isRXCHAR()){
-                try{
-                    readSting += tempPort.readString(serialPortEvent.getEventValue());
-                    if(readSting.contains("RDY")){
-                        tempPort.writeString("ACK%");
-                        System.out.println("RDY recieved");
-                        isLightbringer.set(true);
-                        isLightbringer.notify();
-                    }
+            if(message.contains("RDY")){
+                try {
+                    port.writeString("ACK%");
                 } catch (SerialPortException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("Cannot write ACK", e);
                 }
+                System.out.println("RDY recieved");
+                isLightbringer.set(true);
+                isLightbringer.notify();
             }
         }
     }
