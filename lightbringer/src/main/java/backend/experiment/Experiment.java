@@ -95,7 +95,7 @@ public class Experiment {
                     );
                     tempPort.setEventsMask(SerialPort.MASK_RXCHAR); //Tells which kind of events are to be sent through the port.
                     tempPort.addEventListener(new ArduinoConnectedEventListener(isLightbringer));
-                    isLightbringer.wait(5000);
+                    isLightbringer.wait(1000);
 
                     //If the port is connected to Lightbringer, we remove the event and reset the mask.
                     if(isLightbringer.get()){
@@ -105,8 +105,8 @@ public class Experiment {
                         arduinoPort = tempPort;
                         break;
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (InterruptedException | SerialPortException e) {
+                    System.out.println("Cannot use " + portName);
                 }
             }
         }
