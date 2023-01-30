@@ -10,7 +10,6 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.13'
-    id 'org.beryx.jlink' version '2.26.0'
 }
 
 repositories {
@@ -28,14 +27,7 @@ javafx {
     modules = [ 'javafx.controls' ]
 }
 
-jlink {
-    launcher {
-        name = 'Lightbringer'
-    }
-}
-
 application {
     // Define the main class for the application.
-    mainModule = 'lightbringer'
     mainClass = 'frontend.Main'
 }
