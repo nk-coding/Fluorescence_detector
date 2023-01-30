@@ -5,9 +5,9 @@ int ammountPointsPerMeasurement = 50;
 unsigned long delayOn = 5000;
 unsigned long delayOff = 500;
 
-int startPin = A6; //pin measuring the inital resistance
-int inputPin = A7;
-int lightPin = 2;
+int startPin = A7; //pin measuring the inital resistance
+int inputPin = A5;
+int lightPin = 3;
 
 boolean handShakeDone = false;
 
