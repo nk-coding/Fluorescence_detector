@@ -15,11 +15,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jssc.SerialPortException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -105,20 +113,58 @@ public abstract class ExperimentView  extends VBox implements ChangingLeft {
     }
 
     private void writeData(List<? extends Measurement> list) throws IOException {
-        String filePath = dirPath+"\\" + fileName;
-        File file = new File(filePath);
-        boolean didExist = file.exists();
-        BufferedWriter bf = new BufferedWriter(new FileWriter(file,true));
+        Path filePath = Paths.get(dirPath, fileName);
+        boolean didExist = Files.exists(filePath);
+        StringBuilder csvBuilder = new StringBuilder();
+        if (didExist) {
+            Files.readAllLines(filePath).forEach(line -> {
+                csvBuilder.append(line);
+                csvBuilder.append(System.lineSeparator());
+            });
+        }
         System.out.println("writing to" + filePath);
         if(!didExist){
-            bf.append(this.getHeading());
-            bf.newLine();
+            csvBuilder.append(this.getHeading());
+            csvBuilder.append(System.lineSeparator());
         }
         for(Measurement mes : list){
-            bf.append(mes.toCSVString());
-            bf.newLine();
+            csvBuilder.append(mes.toCSVString());
+            csvBuilder.append(System.lineSeparator());
         }
-        bf.close();
+        String csvString = csvBuilder.toString();
+        Files.writeString(filePath, csvString);
+        writeAsXlsx(csvString);
+    }
+
+    private void writeAsXlsx(String csv) {
+        Path filePath = Paths.get(dirPath, fileName.replace(".csv", ".xlsx"));
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet();
+            int rowNr = 0;
+            for (String line : csv.split("\\R")) {
+                Row row = sheet.createRow(rowNr++);
+                int colNr = 0;
+                for (String cellValue : line.split(",")) {
+                    double numericValue = Double.NaN;
+                    boolean isNumeric;
+                    try {
+                        numericValue = Double.parseDouble(cellValue);
+                        isNumeric = true;
+                    } catch (NumberFormatException e) {
+                        isNumeric = false;
+                    }
+                    Cell cell = row.createCell(colNr, isNumeric ? CellType.NUMERIC : CellType.STRING);
+                    if (isNumeric) {
+                        cell.setCellValue(numericValue);
+                    } else {
+                        cell.setCellValue(cellValue);
+                    }
+                }
+            }
+            workbook.write(Files.newOutputStream(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getHeading(){
