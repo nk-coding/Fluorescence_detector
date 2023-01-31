@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 import jssc.SerialPortException;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public abstract class ModeMenu extends VBox {
     //ImageViews instead of buttons because the former is easier to style, IMO.
@@ -82,7 +84,15 @@ public abstract class ModeMenu extends VBox {
         savePrefButton = new ImageView(ImagesClass.getSAVEPREF());
         savePrefButton.setPreserveRatio(true);
         savePrefButton.setFitHeight(40);
+    }
 
+    private void initInitialPath(Label dirLabel) {
+        String potentialPath = System.getProperty("user.dir");
+        if (Files.exists(Paths.get(potentialPath))) {
+            directoryPath = potentialPath;
+            dirLabel.setText(potentialPath);
+            isPathSelected = true;
+        }
     }
 
     protected abstract void startExperiment(MainController controller) throws NumberFormatException;
@@ -110,6 +120,7 @@ public abstract class ModeMenu extends VBox {
         directoryButtonBox.setAlignment(Pos.CENTER);
         HBox.setHgrow(directoryButtonBox,Priority.SOMETIMES);
         Label dirLabel = new Label("Select a directory");
+        initInitialPath(dirLabel);
         VBox temp = new VBox(dirLabel);
         temp.setAlignment(Pos.CENTER_LEFT);
         temp.setMaxWidth(200);
