@@ -153,7 +153,7 @@ public abstract class ExperimentView  extends VBox implements ChangingLeft {
                     } catch (NumberFormatException e) {
                         isNumeric = false;
                     }
-                    Cell cell = row.createCell(colNr, isNumeric ? CellType.NUMERIC : CellType.STRING);
+                    Cell cell = row.createCell(colNr++, isNumeric ? CellType.NUMERIC : CellType.STRING);
                     if (isNumeric) {
                         cell.setCellValue(numericValue);
                     } else {
@@ -172,7 +172,7 @@ public abstract class ExperimentView  extends VBox implements ChangingLeft {
         for(int i = 0; i < this.exp.getConf().getNumberOfValuesPerMeasurement(); i++){
             result += i+",";
         }
-        result += "Average,Standard Error";
+        result += ",Average,Standard Error,";
         result = this.helpGetHeading(result);
         return result;
     };
