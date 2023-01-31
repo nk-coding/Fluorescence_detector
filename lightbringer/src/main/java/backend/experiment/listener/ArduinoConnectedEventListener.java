@@ -1,5 +1,6 @@
 package backend.experiment.listener;
 
+import backend.Constants;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -20,7 +21,7 @@ public class ArduinoConnectedEventListener extends BaseListener{
         synchronized(isLightbringer){
             if(message.contains("RDY")){
                 try {
-                    port.writeString("ACK%");
+                    port.writeString("ACK" + Constants.SEPARATOR);
                 } catch (SerialPortException e) {
                     throw new RuntimeException("Cannot write ACK", e);
                 }

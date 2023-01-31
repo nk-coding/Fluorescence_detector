@@ -1,5 +1,6 @@
 package backend.tests;
 
+import backend.Constants;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortException;
@@ -64,10 +65,10 @@ public class TestSketch {
         byte delayOff1 = 0b11;
         byte delayOff2 = 0b1110100;
         try {
-            this.arduinoPort.writeString("CON%");
+            this.arduinoPort.writeString("CON" + Constants.SEPARATOR);
             this.arduinoPort.writeBytes(new byte[]{delayBetweenMeasurements,ammountPointsPerMeasurement,delayOn1,delayOn2,delayOff1,delayOff2});
-            this.arduinoPort.writeString("ME1%");
-            this.arduinoPort.writeString("MES%");
+            this.arduinoPort.writeString("ME1" + Constants.SEPARATOR);
+            this.arduinoPort.writeString("MES" + Constants.SEPARATOR);
         } catch (SerialPortException e) {
             e.printStackTrace();
         }

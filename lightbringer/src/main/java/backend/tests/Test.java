@@ -87,7 +87,7 @@ public class Test {
         //Configuration.test();
         Experiment.test();
         /*String test = "";
-        String[] values = test.split("%");
+        String[] values = test.split(Constants.SEPARATOR);
         for(String val: values){
             System.out.println(val);
         }

@@ -1,5 +1,6 @@
 package backend.experiment;
 
+import backend.Constants;
 import backend.experiment.listener.LightBringerNotFoundException;
 import backend.experiment.listener.SaveValuesEventListener;
 import backend.measurement.MeasurementConcentration;
@@ -50,7 +51,7 @@ public class ExperimentConcentration extends Experiment {
         blank = new MeasurementConcentrationBlank(param,baseVolt);
         System.out.println("Adding listener");
         this.arduinoPort.addEventListener(new SaveValuesEventListener(this,blank));
-        this.arduinoPort.writeString("MES%");
+        this.arduinoPort.writeString("MES" + Constants.SEPARATOR);
         this.setRdyReceived(false);
         this.currState.set(StateExperiment.MEASURING);
         System.out.println("adios");
@@ -66,7 +67,7 @@ public class ExperimentConcentration extends Experiment {
             MeasurementConcentration mes = new MeasurementConcentration(this.param,this.baseVolt,this.calculateTimeMeasurement());
             System.out.println("Adding listener");
             this.arduinoPort.addEventListener(new SaveValuesEventListener(this,mes));
-            this.arduinoPort.writeString("MES%");
+            this.arduinoPort.writeString("MES" + Constants.SEPARATOR);
             this.setRdyReceived(false);
             this.currState.set(StateExperiment.MEASURING);
             System.out.println("adios");

@@ -1,5 +1,6 @@
 package backend.experiment.listener;
 
+import backend.Constants;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
@@ -18,10 +19,10 @@ public abstract class BaseListener implements SerialPortEventListener {
                     String read = port.readString(serialPortEvent.getEventValue());
                     String readWithLast = lastFrag + read;
                     this.lastFrag = "";
-                    String[] values = readWithLast.split("%");
+                    String[] values = readWithLast.split(Constants.SEPARATOR);
                     for (int i = 0; i < values.length; i++) {
                         String value = values[i];
-                        if (i == values.length - 1 && !read.endsWith("%")) {
+                        if (i == values.length - 1 && !read.endsWith(Constants.SEPARATOR)) {
                             lastFrag = value;
                         } else {
                             System.out.println("message: " + value);

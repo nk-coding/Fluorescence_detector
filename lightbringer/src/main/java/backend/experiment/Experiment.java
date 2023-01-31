@@ -1,5 +1,6 @@
 package backend.experiment;
 
+import backend.Constants;
 import backend.experiment.listener.ArduinoConnectedEventListener;
 import backend.experiment.listener.LightBringerNotFoundException;
 import backend.experiment.listener.SaveValuesEventListener;
@@ -121,7 +122,7 @@ public class Experiment {
      * @throws SerialPortException if there was an unexpected error with the port @see SerialPortException.
      */
     private void sendConfiguration() throws SerialPortException {
-        arduinoPort.writeString("CON%");
+        arduinoPort.writeString("CON" + Constants.SEPARATOR);
         byte[] temp1 = conf.getDelayOnAsBytes();
         byte[] temp2 = conf.getDelayOffAsBytes();
         byte[] sendArray = new byte[2 + temp1.length + temp2.length];
@@ -144,7 +145,7 @@ public class Experiment {
         System.out.println("Disconnecting Arduino");
         if(arduinoPort != null) {
             try{
-                arduinoPort.writeString("BYE%");
+                arduinoPort.writeString("BYE" + Constants.SEPARATOR);
                 arduinoPort.removeEventListener();
             } catch (SerialPortException e) {
                 //
@@ -175,7 +176,7 @@ public class Experiment {
         baseVolt = new MeasurementBaseVolt();
         System.out.println("Adding listener");
         this.arduinoPort.addEventListener(new SaveValuesEventListener(this,baseVolt));
-        this.arduinoPort.writeString("ME1%");
+        this.arduinoPort.writeString("ME1" + Constants.SEPARATOR);
         this.setRdyReceived(false);
         this.currState.set(StateExperiment.MEASURING);
     }

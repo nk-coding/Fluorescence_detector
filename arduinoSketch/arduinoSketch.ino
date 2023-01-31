@@ -1,5 +1,5 @@
 String lastMessage = "";
-String separator = "%";
+String separator = "\n";
 int delayBetweenValues = 50;
 int ammountPointsPerMeasurement = 50;
 unsigned long delayOn = 5000;
@@ -100,7 +100,7 @@ void disconnectLightbringer(){
  */
 void loop() {
   if(Serial.available() > 0){
-    lastMessage = Serial.readStringUntil('%');
+    lastMessage = Serial.readStringUntil('\n');
     if(lastMessage == "BYE"){
       disconnectLightbringer();
       }

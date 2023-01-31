@@ -1,6 +1,7 @@
 package backend.experiment;
 
 
+import backend.Constants;
 import backend.experiment.listener.LightBringerNotFoundException;
 import backend.experiment.listener.SaveValuesEventListener;
 import backend.measurement.Measurement;
@@ -47,7 +48,7 @@ public class ExperimentCalibrate extends Experiment {
         synchronized (this.rdyReceived){
             MeasurementCalibration newMeasurement = new MeasurementCalibration(concentration,param,this.baseVolt);
             this.arduinoPort.addEventListener(new SaveValuesEventListener(this,newMeasurement));
-            this.arduinoPort.writeString("MES%");
+            this.arduinoPort.writeString("MES" + Constants.SEPARATOR);
             this.setRdyReceived(false);
             this.currState.set(StateExperiment.MEASURING);
             this.rdyReceived.wait();
